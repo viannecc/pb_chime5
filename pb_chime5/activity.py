@@ -323,7 +323,13 @@ def get_activity_chime6(
     # Dispatcher is a dict with better KeyErrors
     all_acitivity = Dispatcher()
     for session_id, it_S in dict_it_S.items():
-        speaker_ids = mapping.session_to_speakers[session_id]
+        # add by vianne zhou
+        spkrs = set()
+        for utt_id in dict_it_S[session_id].keys():
+            spkrs.add(dict_it_S[session_id][utt_id]['speaker_id'])
+        # speaker_ids = mapping.session_to_speakers[session_id]
+        speaker_ids = list(spkrs)
+        # add by vianne zhou
 
         if use_ArrayIntervall:
             assert dtype == np.bool, dtype
