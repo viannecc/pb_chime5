@@ -485,8 +485,7 @@ class Enhancer:
       return x_hat
 
     else:
-      shift = int(self.context_samples / 16000)
-      return obs[0, shift: -shift]
+      return obs[0, self.context_samples: -self.context_samples]
 
   def enhance_observation(
     self,
