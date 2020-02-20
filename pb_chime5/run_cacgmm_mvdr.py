@@ -170,6 +170,7 @@ class GSS:
       cur = cacGMM.fit(
         y=Obs.T[f, ...],
         iterations=self.iterations,
+        num_classes=3,
         # return_affiliation=True,
       )
 
@@ -461,26 +462,30 @@ class Enhancer:
     else:
       raise ValueError(self.multiarray)
 
-    x_hat = self.enhance_observation(
-      obs,
-      speaker_id=speaker_id,
-      ex=ex,
-      debug=debug,
-    )
+    if not np.all(obs == 0):  # 增加对静音段的判断.
+      x_hat = self.enhance_observation(
+        obs,
+        speaker_id=speaker_id,
+        ex=ex,
+        debug=debug,
+      )
 
-    if self.context_samples > 0:
-      start_orig = ex['start_orig']
-      start = ex['start']
-      start_context = start_orig - start
-      num_samples_orig = ex['num_samples_orig']
-      x_hat = x_hat[..., start_context:start_context + num_samples_orig]
-      # assert x_hat.shape[-1] == num_samples_orig, x_hat.shape
-      # That assert does not work for P44_S18_U06_0265232-0265344.wav
+      if self.context_samples > 0:
+        start_orig = ex['start_orig']
+        start = ex['start']
+        start_context = start_orig - start
+        num_samples_orig = ex['num_samples_orig']
+        x_hat = x_hat[..., start_context:start_context + num_samples_orig]
+        # assert x_hat.shape[-1] == num_samples_orig, x_hat.shape
+        # That assert does not work for P44_S18_U06_0265232-0265344.wav
 
-    if debug:
-      self.enhance_example_locals = locals()
+      if debug:
+        self.enhance_example_locals = locals()
 
-    return x_hat
+      return x_hat
+
+    else:
+      return obs[0, :]
 
   def enhance_observation(
     self,
@@ -571,8 +576,8 @@ def get_enhancer(
 
   database_path=str(JSON_PATH / 'chime6.json'),
 ):
-  assert wpe is True or wpe is False, wpe
 
+  assert wpe is True or wpe is False, wpe
 
   return Enhancer(
     multiarray=multiarray,
