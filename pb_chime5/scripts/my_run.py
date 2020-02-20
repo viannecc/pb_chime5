@@ -14,7 +14,7 @@ from sacred.observers import FileStorageObserver
 import dlp_mpi
 
 from pb_chime5.core import get_enhancer
-from pb_chime5.core_chime6 import get_enhancer as get_enhancer_chime6
+from pb_chime5.run_cacgmm_mvdr import get_enhancer as get_enhancer_chime6
 
 experiment = sacred.Experiment('Chime5 Array Enhancement')
 
