@@ -485,7 +485,8 @@ class Enhancer:
       return x_hat
 
     else:
-      return obs[0, :]
+      shift = int(self.context_samples / 16000)
+      return obs[0, shift: -shift]
 
   def enhance_observation(
     self,
@@ -576,7 +577,6 @@ def get_enhancer(
 
   database_path=str(JSON_PATH / 'chime6.json'),
 ):
-
   assert wpe is True or wpe is False, wpe
 
   return Enhancer(
